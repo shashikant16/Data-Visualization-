@@ -1,0 +1,73 @@
+---
+title: "modi"
+author: "skdewangan"
+date: "9 November 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(stringi)
+library(dplyr)
+x="this is my first my tweet this"
+table(strsplit(x," ")[[1]])
+
+filename="C:/Users/Administrator/Desktop/Data Visuvalizaion/sample.txt"
+article=readChar(filename,file.info(filename)$size)
+article
+
+words_all=unlist(strsplit(article," "))
+length(words_all)
+
+words_freq=as.data.frame(table(words_all))
+words_freq=words_freq%>%arrange(-Freq)%>%head(50)
+library(wordcloud)
+wordcloud(words_freq$words_all,words_freq$Freq)
+
+library(tm)
+# no split  word  identy uiq words
+comman_stop_word=stopwords()
+length(comman_stop_word)
+
+words_top=words_freq%>%filter(!words_all%in%comman_stop_word)%>%arrange(-Freq)%>%head(50)
+words_top
+
+wordcloud(words_top$words_all,words_top$Freq)
+
+```
+```{r}
+library(dplyr)
+library(wordcloud)
+tweets<-read.csv("file:///C:/Users/Administrator/Desktop/Data Visuvalizaion/datasets/narendramodi_tweets.csv")
+tweets$text=as.character(tweets$text)
+tweets$text=tolower(tweets$text)
+tweets$text=gsub('^[a-z] ','',tweets$text)
+
+words_all=unlist(strsplit(tweets$text," "))
+length(words_all)
+
+words_freq=as.data.frame(table(words_all))
+names(words_freq)
+words_top= words_freq%>%filter(!words_all %in% comman_stop_word) %>% arrange(-Freq) %>% head(50)
+#wordcloud(words_freq$words_all,words_top$Freq,)
+
+library(RColorBrewer)
+pal2=brewer.pal(1,"Dark2")
+
+pal2
+wordcloud(words_top$words_all,words_top$Freq,colors = pal2)
+```
+
+
+
+
+
+
+
+
+
+
+
+
