@@ -1,0 +1,74 @@
+---
+title: "Cricket Analysis"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: row
+    vertical_layout: scroll
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+Row
+-----------------
+###Chart A  
+top ten countries based on total runs
+```{r}
+library(ggplot2)
+library(dplyr)
+library(plotly)
+data <- read.csv("file:///C:/Users/Administrator/Desktop/Data Visuvalizaion/datasets/odi-batting.csv",header = T)
+#Top 10 conutry name
+top_10_coun<- data %>% group_by(Country) %>% summarise(tot_run=sum(Runs))%>%arrange(-tot_run)%>%head(10)
+
+# g <- ggplot(top_10_coun,aes(x=Country,y=tot_run,fill=tot_run))+geom_bar(stat = 'identity')
+# ggplotly(g)
+g <- ggplot(top_10_coun,aes(x=reorder(Country,-tot_run)  ,y=tot_run,fill=tot_run))+geom_bar(stat = 'identity')+xlab("Country")+ylab("tot_run")
+ggplotly(g)
+
+```
+
+
+###Chart C
+top ten countries based on total players
+```{r}
+# Top 10 palayer
+top_10_player<- data %>% group_by(Player) %>% summarise(tot_run=sum(Runs,na.rm=TRUE))%>%arrange(-tot_run)%>%head(10)
+
+# g1 <- ggplot(top_10_player,aes(x=Player,y=tot_run,fill=tot_run))+geom_bar(stat = 'identity')
+# ggplotly(g1)
+
+g1 <- ggplot(top_10_player,aes(x=reorder(Player,-tot_run) ,y=tot_run,fill=tot_run))+geom_bar(stat = 'identity')+xlab('Player')+ylab('tot_run')
+ggplotly(g1)
+```
+
+
+
+
+
+Row
+---------------
+### Chart B
+```{r}
+#top tens wicket
+library(dplyr)
+library(ggplot2)
+top_10_sr<- data %>% group_by(Player) %>% summarise(high_scoreRa=sum(ScoreRate,na.rm=TRUE)) %>% arrange(-high_scoreRa) %>% head(10)
+
+g1 <- ggplot(top_10_sr,aes(x=Player,y=high_scoreRa,fill=high_scoreRa))+geom_bar(stat = 'identity')+xlab('Player')+ylab('high_scoreRa')
+ggplotly(g1)
+
+
+
+```
+
+
+
+### Chart F
+
+
+Row
+--------------
+###Chart D
+###Chart E
+
