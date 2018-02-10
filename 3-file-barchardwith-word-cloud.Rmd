@@ -1,0 +1,86 @@
+---
+title: "Twitter Ananliyis "
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: row
+    vertical_layout: scroll
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+tweets <- read.csv("file:///C:/Users/Administrator/Desktop/Data Visuvalizaion/datasets/narendramodi_tweets.csv")
+```
+Row
+-----------
+### A
+
+
+ 
+### Total tweets
+```{r}
+# total tweets
+valueBox(500,icon = "fa-twitter",color="yellow")
+```
+
+
+### Avrag retweets
+```{r}
+#avrag retweets
+valueBox(10000,icon = "fa-retweet",color = "red")
+```
+
+Row 
+-------------
+###Chart D
+```{r}
+g=tweets %>% ggplot(aes(x=retweets_count,y=favorite_count,fill=source))+geom_point()+xlab("Reteets")+ylab("likes")
+ggplotly(g)
+```
+Row
+-----------
+
+###Chart E
+
+
+
+```{r}
+library(dplyr)
+library(wordcloud)
+library(tm)
+tweets$text=as.character(tweets$text)
+tweets$test=tolower(tweets$text)
+tweets$test=gsub('^[a-z] ','',tweets$text)
+
+words_all=unlist(strsplit(tweets$text,' '))
+#length(words_all)
+
+words_freq=as.data.frame(table(words_all))
+#names(words_freq)
+comman_stop_word=stopwords()
+words_top= words_freq%>%filter(!words_all %in% comman_stop_word) %>% arrange(-Freq) %>% head(50)
+#wordcloud(words_freq$words_all,words_top$Freq,)
+
+library(RColorBrewer)
+pal2=brewer.pal(1,"Dark2")
+
+#pal2
+wordcloud(words_top$words_all,words_top$Freq,colors = pal2)
+```
+
+
+###Chart F
+#treanding hastags
+```{r}
+
+hastag_words=words_freq[startsWith(as.character(words_freq$words_all),'#'),]
+hastag_words_top=hastag_words %>% arrange(-Freq) %>% head(50)
+
+wordcloud(hastag_words_top$words_all,hastag_words$Freq,colors = hastag_words_top$Freq)
+
+```
+
+
+
